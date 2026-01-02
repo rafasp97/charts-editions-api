@@ -10,11 +10,12 @@ import {
   where
 } from "firebase/firestore";
 import { db } from './database/firebase';
-import type { Artist } from "./interfaces/Artist";
+import type { Artist } from "./interfaces/Artist.interface";
+import { FireBaseData } from './interfaces/FireBaseData.inferface';
 
 @Injectable()
 export class FireBaseService {
-  async getLastRankByGroup(groupName: string) {
+  async getLastRankByGroup(groupName: string): Promise<FireBaseData> {
     const groupId = await this.getGroupId(groupName);
     const colRef = collection(db, "ranks");
 
