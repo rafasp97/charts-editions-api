@@ -5,6 +5,7 @@ import { Transform } from 'class-transformer';
 export class ChartsDto {
   @ArrayNotEmpty()
   @IsString({ each: true })
+  @IsOptional()
   users: string[];
 
   @IsEnum(LastFmPeriod)

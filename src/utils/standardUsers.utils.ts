@@ -14,7 +14,9 @@ export class StandardUsers {
         'becamusics',
         'Edu_XS',
         'felipetas',
-        'vitoriaforttes'
+        'vitoriaforttes',
+        'iigorsolv',
+        'cocodilhaatomic'
     ];
 
     static getUsersByGroup(group: string): string[] {

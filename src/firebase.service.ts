@@ -43,7 +43,7 @@ export class FireBaseService {
 
     return {
       createdAt: !isCreatedToday ? lastRankDate : penultRank?.createdAt.toDate(),
-      data: !isCreatedToday ? JSON.parse(lastRank.rank) as Artist[] : JSON.parse(penultRank?.rank) as Artist[],
+      data: !isCreatedToday ? lastRank.rank as Artist[] : penultRank?.rank as Artist[],
       lastDate: lastRankDate
     };
   }
