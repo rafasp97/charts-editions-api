@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { LastFmPeriod } from './enums/LastFmPeriod.enum';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { Artist } from './interfaces/Artist.interface';
 import { FireBaseService } from './firebase.service';
 import { StandardUsers } from './utils/standardUsers.utils';
@@ -40,8 +40,8 @@ export class AppService {
     const rank = Helper.generateRank(artists);
     if (!group) return { rank };
     const rankByGroup = await this.generateRankByGroup(rank, group);
-    return { 
-      rank: rankByGroup, 
+    return {
+      rank: rankByGroup,
       metrics: Helper.getMetrics(rankByGroup, artistsByUsers),
       period: Helper.getPeriod(selectedPeriod)
     };
@@ -54,36 +54,33 @@ export class AppService {
     return Helper.addIndexByLastRank(rank, lastRank.data);
   }
 
-  async getArtists(users: string[], selectedPeriod: LastFmPeriod) {
-    const artists: Artist[] = [];
-    await Promise.all(
-      users.map(async (user) => {
-        const charts = await this.getChartsByLastFmUser(user, selectedPeriod);
-        charts.topartists.artist.forEach((artist: Artist) => {
-          artists.push({
-            name: artist.name,
-            playcount: artist.playcount,
-          });
-        });
-      })
-    );
-    return artists;
-  }
-
   async getArtistsByUsers(users: string[], selectedPeriod: LastFmPeriod) {
     const artistsByUsers: ArtistsByUsers = {};
-    await Promise.all(
-      users.map(async (user) => {
-        const charts = await this.getChartsByLastFmUser(user, selectedPeriod);
-        artistsByUsers[user] = charts.topartists.artist
-          .map(
-            (artist: Artist) => ({
-              name: artist.name,
-              playcount: artist.playcount,
-            })
-          );
-      })
-    );
+    console.log(users);
+    // await Promise.all(
+    //   users.map(async (user) => {
+    //     const charts = await this.getChartsByLastFmUser(user, selectedPeriod);
+    //     artistsByUsers[user] = charts.topartists.artist
+    //       .map(
+    //         (artist: Artist) => ({
+    //           name: artist.name,
+    //           playcount: artist.playcount,
+    //         })
+    //       );
+    //   })
+    // );
+    for (const user of users) {
+      console.log(user);
+      const charts = await this.getChartsByLastFmUser(user, selectedPeriod);
+
+      artistsByUsers[user] = charts.topartists.artist.map(
+        (artist: Artist) => ({
+          name: artist.name,
+          playcount: artist.playcount,
+        })
+      );
+    }
+
     return artistsByUsers;
   }
 
@@ -91,8 +88,19 @@ export class AppService {
     try {
       const response = await axios.get(`${process.env.LASTFM_API}/?method=user.gettopartists&user=${user}&api_key=${process.env.LASTFM_KEY}&period=${period}&format=json`);
       return response.data;
-    } catch (error) {
-      console.log(`Erro: ${error}`);
+    } catch (err) {
+      const error = err as AxiosError;
+      console.error('=== LASTFM ERROR ===');
+      console.error('message:', error.message);
+      console.error('code:', error.code);
+      console.error('status:', error.response?.status);
+      console.error('data:', error.response?.data);
+      console.error('headers:', error.response?.headers);
+      console.error('config:', {
+        url: error.config?.url,
+        params: error.config?.params,
+      });
+      console.error('===================');
       throw new InternalServerErrorException(`Ocorreu um erro ao acessar os dados do LastFM. Confira os dados do seu grupo ou tente novamente mais tarde!`);
     }
   }
@@ -109,7 +117,7 @@ export class AppService {
     });
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: 'networkidle0' });
-    
+
     const buffer = await page.screenshot({ type: 'jpeg', quality: 90, fullPage: true });
 
     await browser.close();
