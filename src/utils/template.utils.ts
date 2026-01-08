@@ -322,14 +322,26 @@ export class Template {
             width: 2em;
             text-align: center;
             }
+
+            .infoBox {
+              background-color: #bfdbfe;
+              border: 1px solid #93c5fd;
+              border-radius: 10px; 
+              padding: 1em; 
+              text-align: center; 
+              margin: 0em 0.5em 0.5em 0.5em;
+            }
+
+            .bold-email {
+              font-weight: 700; /* força o negrito */
+            }
         </style>
         </head>
 
         <body>
         <div class="canvas">
             <div class="devInfo">
-            <img src=${this.getImage('public/images/github-logo.png')} class="icon-github" alt="Descrição da imagem" />
-            <p>@rafasp</p>
+            <p>charts-edition.netlify.app</p>
             </div>
             <div class="header">
             <div class="logo">
@@ -390,7 +402,14 @@ export class Template {
                   </div>
               </div>
             </div>     
-            `: ''}
+            `: `
+            <div class="infoBox" ref="container">
+              <span>
+                Para incluir métricas avançadas, como dados de usuários, histórico de colocações dos artistas e a criação de grupos personalizados, envie um email para: 
+                <strong class="bold-email">rafaelsprata@outlook.com</strong>
+              </span>
+            </div>
+            `}
         </div>
         </body>
 
