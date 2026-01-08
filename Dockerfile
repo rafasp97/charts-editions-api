@@ -1,4 +1,4 @@
-FROM node:18 AS builder
+FROM node:20-alpine AS build
 
 WORKDIR /usr/src/app
 
@@ -8,7 +8,9 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-FROM node:18-slim
+FROM node:20-alpine AS prod
+
+WORKDIR /usr/src/app
 
 # Instala Chromium e libs necessárias
 RUN apk add --no-cache \
@@ -25,8 +27,6 @@ RUN apk add --no-cache \
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 ENV NODE_ENV=production
 ENV PORT=3000
-
-WORKDIR /usr/src/app
 
 COPY --from=build /usr/src/app/dist ./dist
 COPY --from=build /usr/src/app/node_modules ./node_modules
