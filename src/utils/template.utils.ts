@@ -30,9 +30,9 @@ export class Template {
             gap: 2em;
             }
 
-            .canvas {
+            body {
             width: 793px;
-            max-height: 992px;
+            max-height: 999px;
             padding: 0.5em;
             position: relative;
             overflow: hidden;
@@ -73,9 +73,9 @@ export class Template {
             justify-content: center;
             align-items: center;
             width: 100%;
-            height: 2em;
-            left: 0em;
-            top: 0em;
+            height: 2.5em;
+            right: 0em;
+            top: -0.5em;
             padding: 0.3em;
             position: absolute;
             }
