@@ -56,7 +56,6 @@ export class AppService {
 
   async getArtistsByUsers(users: string[], selectedPeriod: LastFmPeriod) {
     const artistsByUsers: ArtistsByUsers = {};
-    console.log(users);
     // await Promise.all(
     //   users.map(async (user) => {
     //     const charts = await this.getChartsByLastFmUser(user, selectedPeriod);
@@ -70,7 +69,6 @@ export class AppService {
     //   })
     // );
     for (const user of users) {
-      console.log(user);
       const charts = await this.getChartsByLastFmUser(user, selectedPeriod);
 
       artistsByUsers[user] = charts.topartists.artist.map(
