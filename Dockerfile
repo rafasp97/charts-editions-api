@@ -1,28 +1,32 @@
-FROM node:20-alpine AS build
+FROM node:20-bullseye AS build
 
 WORKDIR /usr/src/app
-
 COPY package*.json ./
 RUN npm install
-
 COPY . .
 RUN npm run build
 
-FROM node:20-alpine AS prod
+FROM node:20-bullseye AS prod
 
 WORKDIR /usr/src/app
 
 # Instala Chromium e libs necessárias
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y \
     chromium \
-    nss \
-    freetype \
-    harfbuzz \
     ca-certificates \
-    ttf-freefont \
-    fontconfig \
-    udev \
-    bash
+    fonts-liberation \
+    libnss3 \
+    libatk-bridge2.0-0 \
+    libx11-xcb1 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxrandr2 \
+    libasound2 \
+    libpangocairo-1.0-0 \
+    libgtk-3-0 \
+    libxshmfence1 \
+    bash \
+ && rm -rf /var/lib/apt/lists/*
 
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 ENV NODE_ENV=production
@@ -35,4 +39,3 @@ COPY --from=build /usr/src/app/public ./public
 EXPOSE 3000
 
 CMD ["node", "dist/main"]
-
